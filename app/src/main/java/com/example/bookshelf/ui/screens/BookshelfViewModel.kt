@@ -10,23 +10,17 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bookshelf.BookshelfApplication
 import com.example.bookshelf.data.BookshelfRepository
-import com.example.bookshelf.model.Bookshelf
+import com.example.bookshelf.model.Book
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-/**
- * UI state for the Home screen
- */
 sealed interface BookshelfUiState {
-    data class Success(val bookshelf: List<Bookshelf>) : BookshelfUiState
+    data class Success(val book: List<Book>) : BookshelfUiState
     object Error : BookshelfUiState
     object Loading : BookshelfUiState
 }
 
-/**
- * ViewModel containing the app data and method to retrieve the data
- */
 class BookshelfViewModel(private val bookshelfRepository: BookshelfRepository) : ViewModel() {
 
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
@@ -40,7 +34,12 @@ class BookshelfViewModel(private val bookshelfRepository: BookshelfRepository) :
         viewModelScope.launch {
             bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try {
-                BookshelfUiState.Success(bookshelfRepository.getBookshelf())
+                val books = bookshelfRepository.getBooks("jazz+history")
+                if (books != null) {
+                    BookshelfUiState.Success(books)
+                } else {
+                    BookshelfUiState.Error
+                }
             } catch (e: IOException) {
                 BookshelfUiState.Error
             } catch (e: HttpException) {
@@ -49,9 +48,6 @@ class BookshelfViewModel(private val bookshelfRepository: BookshelfRepository) :
         }
     }
 
-    /**
-     * Factory for [BookshelfViewModel] that takes [BookshelfRepository] as a dependency
-     */
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
-import com.example.bookshelf.model.Bookshelf
+import com.example.bookshelf.model.Book
 import com.example.bookshelf.ui.theme.BookshelfTheme
 
 @Composable
@@ -44,7 +44,7 @@ fun HomeScreen(
         is BookshelfUiState.Loading -> LoadingScreen(modifier.size(200.dp))
         is BookshelfUiState.Success ->
             BookshelfListScreen(
-                bookshelf = bookshelfUiState.bookshelf,
+                books = bookshelfUiState.book,
                 modifier = modifier
                     .padding(
                         start = dimensionResource(R.dimen.padding_medium),
@@ -57,9 +57,6 @@ fun HomeScreen(
     }
 }
 
-/**
- * The home screen displaying the loading message.
- */
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
@@ -69,9 +66,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     )
 }
 
-/**
- * The home screen displaying error message with re-attempt button.
- */
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -87,14 +81,14 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BookshelfCard(bookshelf: Bookshelf, modifier: Modifier = Modifier) {
+fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = stringResource(R.string.bookshelf_title, bookshelf.name, bookshelf.type),
+                text = book.getTitle(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.padding_medium)),
@@ -105,7 +99,7 @@ fun BookshelfCard(bookshelf: Bookshelf, modifier: Modifier = Modifier) {
             AsyncImage(
                 modifier = Modifier.fillMaxWidth(),
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(bookshelf.imgSrc)
+                    .data(book.getThumbnailUrl() ?: "")
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -113,19 +107,14 @@ fun BookshelfCard(bookshelf: Bookshelf, modifier: Modifier = Modifier) {
                 error = painterResource(id = R.drawable.ic_broken_image),
                 placeholder = painterResource(id = R.drawable.loading_img)
             )
-            Text(
-                text = bookshelf.description,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Justify,
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-            )
         }
     }
 }
 
+
 @Composable
 private fun BookshelfListScreen(
-    bookshelf: List<Bookshelf>,
+    books: List<Book>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
@@ -135,15 +124,16 @@ private fun BookshelfListScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         items(
-            items = bookshelf,
-            key = { bookshelf ->
-                bookshelf.name
+            items = books,
+            key = { book ->
+                book.id
             }
-        ) { bookshelf ->
-            BookshelfCard(bookshelf = bookshelf, modifier = Modifier.fillMaxSize())
+        ) { book ->
+            BookshelfCard(book = book, modifier = Modifier.fillMaxSize())
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -169,17 +159,6 @@ fun ErrorScreenPreview() {
 @Composable
 fun BookshelfListScreenPreview() {
     BookshelfTheme {
-        val mockData = List(10) {
-            Bookshelf(
-                "Lorem Ipsum - $it",
-                "$it",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do" +
-                        " eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad" +
-                        " minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip" +
-                        " ex ea commodo consequat.",
-                imgSrc = ""
-            )
-        }
-        BookshelfListScreen(mockData, Modifier.fillMaxSize())
+
     }
 }

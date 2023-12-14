@@ -1,22 +1,42 @@
 package com.example.bookshelf.data
 
-import com.example.bookshelf.model.Bookshelf
+import com.example.bookshelf.model.Book
 import com.example.bookshelf.network.BookshelfApiService
 
-/**
- * Repository retrieves bookshelf data from underlying data source.
- */
 interface BookshelfRepository {
-    /** Retrieves list of bookshelf from underlying data source */
-    suspend fun getBookshelf(): List<Bookshelf>
+    suspend fun getBooks(query: String): List<Book>?
+    suspend fun getBook(id: String): Book?
 }
 
-/**
- * Network Implementation of repository that retrieves bookshelf data from underlying data source.
- */
 class DefaultBookshelfRepository(
     private val bookshelfApiService: BookshelfApiService
 ) : BookshelfRepository {
-    /** Retrieves list of bookshelf from underlying data source */
-    override suspend fun getBookshelf(): List<Bookshelf> = bookshelfApiService.getBookshelf()
+
+    override suspend fun getBooks(query: String): List<Book>? {
+        return try {
+            val res = bookshelfApiService.getBooks(query)
+            if (res.isSuccessful) {
+                res.body()?.items ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    override suspend fun getBook(id: String): Book? {
+        return try {
+            val res = bookshelfApiService.getBook(id)
+            if (res.isSuccessful) {
+                res.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 }
