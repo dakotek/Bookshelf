@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,9 +46,9 @@ fun HomeScreen(
                 books = bookshelfUiState.book,
                 modifier = modifier
                     .padding(
-                        start = dimensionResource(R.dimen.padding_medium),
-                        top = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium)
+                        start = 16.dp,
+                        top = 16.dp,
+                        end = 16.dp
                     ),
                 contentPadding = contentPadding
             )
@@ -91,11 +90,21 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
                 text = book.getTitle(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_medium)),
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
+            book.getAuthors()?.let { authors ->
+                Text(
+                    text = authors.joinToString(", "),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Start
+                )
+            }
             AsyncImage(
                 modifier = Modifier.fillMaxWidth(),
                 model = ImageRequest.Builder(context = LocalContext.current)

@@ -8,13 +8,15 @@ data class Book(
     val volumeInfo: VolumeInfo,
 ) {
     fun getTitle(): String = volumeInfo.title
-    fun getThumbnailUrl(): String? = volumeInfo.imageLinks?.thumbnail
+    fun getAuthors(): List<String>? = volumeInfo.authors
+    fun getThumbnailUrl(): String? = volumeInfo.imageLinks?.httpsThumbnail
 }
 
 @Serializable
 data class VolumeInfo(
     val title: String,
     val imageLinks: ImageLinks? = null,
+    val authors: List<String>? = null,
 )
 
 @Serializable
