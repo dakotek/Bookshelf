@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -91,7 +92,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
@@ -101,7 +102,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     textAlign = TextAlign.Start
                 )
             }
@@ -120,7 +121,6 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 private fun BookshelfListScreen(
     books: List<Book>,
@@ -130,19 +130,27 @@ private fun BookshelfListScreen(
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         items(
-            items = books,
-            key = { book ->
-                book.id
+            items = books.chunked(2),
+            key = { bookPair ->
+                bookPair.firstOrNull()?.id ?: ""
             }
-        ) { book ->
-            BookshelfCard(book = book, modifier = Modifier.fillMaxSize())
+        ) { bookPair ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                for (book in bookPair) {
+                    BookshelfCard(book = book, modifier = Modifier.weight(1f))
+                }
+            }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
