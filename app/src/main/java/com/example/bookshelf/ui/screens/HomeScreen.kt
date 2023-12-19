@@ -33,6 +33,7 @@ import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
 import com.example.bookshelf.ui.theme.BookshelfTheme
 
+// Función de composición para la pantalla principal (HomeScreen)
 @Composable
 fun HomeScreen(
     bookshelfUiState: BookshelfUiState,
@@ -57,6 +58,7 @@ fun HomeScreen(
     }
 }
 
+// Función de composición para la pantalla de carga (LoadingScreen)
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
@@ -66,6 +68,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     )
 }
 
+// Función de composición para la pantalla de error (ErrorScreen)
 @Composable
 fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -80,6 +83,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+// Función de composición para la tarjeta de un libro (BookshelfCard)
 @Composable
 fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
     Card(
@@ -87,6 +91,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            // Título del libro
             Text(
                 text = book.getTitle(),
                 modifier = Modifier
@@ -96,6 +101,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
+            // Autores del libro (si están disponibles)
             book.getAuthors()?.let { authors ->
                 Text(
                     text = authors.joinToString(", "),
@@ -106,6 +112,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
                     textAlign = TextAlign.Start
                 )
             }
+            // Imagen del libro cargada de forma asíncrona con Coil
             AsyncImage(
                 modifier = Modifier.fillMaxWidth(),
                 model = ImageRequest.Builder(context = LocalContext.current)
@@ -121,6 +128,7 @@ fun BookshelfCard(book: Book, modifier: Modifier = Modifier) {
     }
 }
 
+// Función de composición para la pantalla de la lista de libros (BookshelfListScreen)
 @Composable
 private fun BookshelfListScreen(
     books: List<Book>,
@@ -145,6 +153,7 @@ private fun BookshelfListScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 for (book in bookPair) {
+                    // Muestra las tarjetas de los libros en una fila
                     BookshelfCard(book = book, modifier = Modifier.weight(1f))
                 }
             }
@@ -152,6 +161,7 @@ private fun BookshelfListScreen(
     }
 }
 
+// Previsualización de la pantalla de carga
 @Preview(showBackground = true)
 @Composable
 fun LoadingScreenPreview() {
@@ -164,6 +174,7 @@ fun LoadingScreenPreview() {
     }
 }
 
+// Previsualización de la pantalla de error
 @Preview(showBackground = true)
 @Composable
 fun ErrorScreenPreview() {
@@ -172,6 +183,7 @@ fun ErrorScreenPreview() {
     }
 }
 
+// Previsualización de la lista de libros (vacía por ahora)
 @Preview(showBackground = true)
 @Composable
 fun BookshelfListScreenPreview() {

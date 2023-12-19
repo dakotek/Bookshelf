@@ -19,9 +19,11 @@ import com.example.bookshelf.ui.screens.HomeScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfApp() {
+    // Configuración del diseño de la aplicación
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
+            // Barra superior de la aplicación con el nombre
             TopAppBar(
                 title = {
                     Text(
@@ -37,8 +39,10 @@ fun BookshelfApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            // Obtiene la ViewModel asociada a la pantalla principal (HomeScreen)
             val bookshelfViewModel: BookshelfViewModel =
                 viewModel(factory = BookshelfViewModel.Factory)
+            // Muestra la pantalla principal
             HomeScreen(
                 bookshelfUiState = bookshelfViewModel.bookshelfUiState,
                 retryAction = bookshelfViewModel::getBookshelf,
